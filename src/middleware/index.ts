@@ -1,3 +1,8 @@
-import { handleParser, handleCompression, handleCors } from "./common";
+import {
+  handleParser,
+  handleCompression,
+  handleCors,
+  rateLimit,
+} from "./common";
 
-export default [handleCors, handleParser, handleCompression];
+export default [rateLimit, handleCors, handleParser, handleCompression];

@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import {
-  HTTP400Error,
-  HTTP401Error,
-} from "../../utils/httpErrors";
+import { HTTP400Error, HTTP401Error } from "../../utils/httpErrors";
 import { User } from "../User/user.schema";
 import { IUser } from "../User/user.interface";
+import { ICookie } from "../../types";
 import * as jwt from "jsonwebtoken";
 
 export class AuthController {
@@ -20,7 +18,7 @@ export class AuthController {
       next(new HTTP400Error("User with this email already exist"));
     } else {
       try {
-        const newUser = await new User(req.body).save();
+        const newUser = (await new User(req.body).save()) as IUser;
         const token = this.signToken(newUser._id);
         res.status(201).json({
           status: "success",
@@ -49,6 +47,13 @@ export class AuthController {
       return next(new HTTP401Error("Not correct credentials!!!"));
     }
     const token = this.signToken(user._id);
-    res.json({ status: "success", token });
+    const expires: number = +(process.env.JWT_COOKIE_EXPIRES as string) || 2;
+    const cookieOptions: ICookie = {
+      expires: new Date(Date.now() + expires * 60 * 60 * 1000),
+      httpOnly: true,
+    };
+    if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+    res.cookie("jwt", token, cookieOptions);
+    res.json({ status: "success", token, data: { user } });
   };
 }
