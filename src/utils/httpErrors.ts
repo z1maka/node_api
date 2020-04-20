@@ -1,0 +1,38 @@
+export abstract class HttpClientError extends Error {
+  readonly statusCode!: number;
+  readonly name!: string;
+
+  protected constructor(message: object | string) {
+    super(JSON.stringify(message));
+    this.name = this.constructor.name;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+export class HTTP400Error extends HttpClientError {
+  readonly statusCode = 400;
+  constructor(message: string | object = "Bad Request") {
+    super(message);
+  }
+}
+
+export class HTTP403Error  extends HttpClientError{
+  readonly statusCode = 403;
+  constructor(message: string | object = "You don't have permission!") {
+    super(message);
+  }
+}
+
+export class HTTP401Error extends HttpClientError {
+  readonly statusCode = 401;
+  constructor(message: string | object = "Unauthorized!!!") {
+    super(message);
+  }
+}
+
+export class HTTP404Error extends HttpClientError {
+  readonly statusCode = 404;
+  constructor(message: string | object = "Not found") {
+    super(message);
+  }
+}
