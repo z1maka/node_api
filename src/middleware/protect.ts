@@ -5,7 +5,7 @@ import { User } from "../controllers/User/user.schema";
 import { HTTP401Error, HTTP403Error } from "../utils/httpErrors";
 
 export const protectJWT = async (
-  req: IReqUser,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -28,7 +28,7 @@ export const protectJWT = async (
           )
         );
       }
-      req.user = currentUser;
+      (req as IReqUser).user = currentUser;
       next();
     } catch (e) {
       next(new HTTP401Error(e.message));

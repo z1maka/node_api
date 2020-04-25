@@ -6,13 +6,8 @@ class UserRoutes {
   public router: Router = Router();
   private controller: UserController = new UserController();
   constructor() {
-    this.router.get("/:id", this.controller.getUserBiId);
-    this.router.get(
-      "/",
-      protectJWT,
-      protectRole("admin"),
-      this.controller.getAllUsers
-    );
+    this.router.get("/:id", protectJWT, this.controller.getUserBiId);
+    this.router.get("/", protectJWT, this.controller.getAllUsers);
   }
 }
 

@@ -1,6 +1,10 @@
 import { Request } from "express";
 import { Document } from "mongoose";
 
+export const isDateGuard = (value: Date | number): value is Date => {
+  return value instanceof Date;
+};
+
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -8,11 +12,14 @@ export interface IUser extends Document {
   role: string;
   passwordConfirm: string | undefined;
   photo?: string;
-  passwordChangedAt?: Date;
+  passwordChangedAt?: Date | number;
+  passwordResetToken?: string;
+  passwordResetExpires?: number;
   validPassword(a: string, b: string): boolean;
   changePasswordAfter(a: string): boolean;
+  createResetToken(): string;
 }
 
 export interface IReqUser extends Request {
-  user?: IUser;
+  user: IUser;
 }
